@@ -61,7 +61,7 @@ app.use ((req, res, next) =>{
 app.use(express.static(path.join(__dirname, 'public')));
 
 console.log("------------------------------------------------------------------------------------------------( " + ((new Date()).toISOString()) +  " )");
-cron.schedule("* * * * *", function() { //se ejecuta cada minuto
+var task = cron.schedule("* * * * *", function() { //se ejecuta cada minuto
     console.log("running a task every 1 minute");
 
     const sqs = new AWS.SQS({
@@ -306,6 +306,16 @@ cron.schedule("* * * * *", function() { //se ejecuta cada minuto
       	}
     });
 });
+
+app.get('/stop', (req,res) => {
+    task.stop();
+    res.send('cron detenido');
+})
+
+app.get('/start', (req,res) => {
+    task.start();
+    res.send('cron iniciado');
+})
 
 app.listen(app.get('port'), () => {
     console.log('Server en puerto', app.get('port'));
