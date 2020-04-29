@@ -61,7 +61,7 @@ app.use ((req, res, next) =>{
 app.use(express.static(path.join(__dirname, 'public')));
 
 console.log("------------------------------------------------------------------------------------------------( " + ((new Date()).toISOString()) +  " )");
-var task = cron.schedule("* * * * *", function() { //se ejecuta cada minuto
+var task = cron.schedule("* * * * *", function() {
     console.log("running a task every 1 minute");
 
     const sqs = new AWS.SQS({
