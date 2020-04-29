@@ -280,6 +280,7 @@ console.log("-------------------------------------------------------------------
     });
 //});
 
+app.get('/stop', (req,res) => {
     task.stop();
     res.send('cron detenido');
 })
