@@ -16,8 +16,6 @@ const fs = require('fs');
 const cron = require("node-cron");
 const exec = require('child_process').exec;
 
-dotenv.config( {path: "./environments/aws.env"});
-
 const database={
   host:process.env.HOST,
   port:process.env.PORT_DB,
@@ -173,7 +171,7 @@ console.log("-------------------------------------------------------------------
                                                     region: "us-east-2",
                                                     endpoint: "http://dynamodb.us-east-2.amazonaws.com",
                                                     accessKeyId: process.env.ACCESS_KEY_ID, 
-                                                    secretAccessKey: process.env.SECRET_ACCESS_KEY2
+                                                    secretAccessKey: process.env.SECRET_ACCESS_KEY
                                                 });
                                                 var docClient = new AWS.DynamoDB.DocumentClient();
                                                 let modify = function () {
