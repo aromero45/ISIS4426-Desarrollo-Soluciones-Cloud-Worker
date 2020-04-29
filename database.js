@@ -1,8 +1,6 @@
 const mysql = require('mysql');
 const { promisify } = require('util');
 
-
-
 const database={
     host:process.env.HOST,
     port:process.env.PORT_DB,
@@ -38,7 +36,6 @@ pool.getConnection((err, connection) => {
 
 }); 
 
-// promesas a callbacks 
 pool.query = promisify(pool.query);
 
 module.exports = pool; 
