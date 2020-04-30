@@ -15,7 +15,8 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const cron = require("node-cron");
 const exec = require('child_process').exec;
-
+require ('newrelic');
+ 
 const database={
   host:process.env.HOST,
   port:process.env.PORT_DB,
