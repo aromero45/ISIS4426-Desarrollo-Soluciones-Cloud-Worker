@@ -86,7 +86,7 @@ var task = cron.schedule("* * * * *", function() {
             console.log(data.Messages[0].Body);
     	    var objectQueue = JSON.parse(data.Messages[0].Body);
             var objectDeleteQueue = data.Messages[0].ReceiptHandle;
-    	    pool.query('SELECT name, last_name, original_video, contest_id, email, id from videos WHERE status <> "Convertido" limit 1', function(err,res){
+    	    pool.query('SELECT name, last_name, original_video, contest_id, email, id from videos WHERE status <> "Convertido"', function(err,res){
                 if(err){
              	    throw err;
                 } else {
@@ -166,8 +166,8 @@ var task = cron.schedule("* * * * *", function() {
 
                                             let fileNameConv=fileName.split('.')[0]+'.mp4';
                                             let status = "Convertido";
-console.log(fileNameConv + "=========================================================================");
-                                            if(fileNameConv !== "load") {
+
+                                            if(fileName.split('.')[0] !== "load") {
                                                 setTimeout(function(){
                                                     AWS.config.update({
                                                         region: "us-east-2",
