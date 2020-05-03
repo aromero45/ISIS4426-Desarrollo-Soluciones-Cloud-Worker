@@ -167,91 +167,93 @@ var task = cron.schedule("* * * * *", function() {
                                             let fileNameConv=fileName.split('.')[0]+'.mp4';
                                             let status = "Convertido";
 
-                                            setTimeout(function(){
-                                                AWS.config.update({
-                                                    region: "us-east-2",
-                                                    endpoint: "http://dynamodb.us-east-2.amazonaws.com",
-                                                    accessKeyId: process.env.ACCESS_KEY_ID, 
-                                                    secretAccessKey: process.env.SECRET_ACCESS_KEY
-                                                });
-                                                var docClient = new AWS.DynamoDB.DocumentClient();
-                                                let modify = function () {
-                                                    docClient.update({
-                                                        TableName: "videos",
-                                                        Key: { "email": emailVideo },
-                                                        UpdateExpression: "set status_video = :statusBy, converted_video = :convertedVideoBy",
-                                                        ExpressionAttributeValues: {
-                                                            ":statusBy" : "Convertido",
-                                                            ":convertedVideoBy" : nameEndField
-                                                        },
-                                                        ReturnValues: "UPDATED_NEW"
-                                                    }, function (err, data) {
-                                                        if (err) {
-                                                            console.log("191 -> users::update::error - " + JSON.stringify(err, null, 2));
-                                                        } else {
-                                                            console.log("193 -> users::update::success "+JSON.stringify(data) );
-
-                                                            sqs.deleteMessage({
-                                                                QueueUrl: 'https://sqs.us-east-2.amazonaws.com/962103057762/SQS-Deployment-D',
-                                                                ReceiptHandle: objectDeleteQueue
-                                                            }, function(err, data) {
-                                                                if (err) {
-                                                                    console.log("Delete Error", err);
-                                                                } else {
-                                                                    console.log("Message Deleted", data);
-
-                                                                    const sqsS = new AWS.SQS({
-                                                                        accessKeyId: process.env.ACCESS_KEY_ID,
-                                                                        secretAccessKey: process.env.SECRET_ACCESS_KEY
-                                                                    });
-                                                                    sqsS.sendMessage({
-                                                                        MessageBody: JSON.stringify({
-                                                                            order_id: new Date().getTime(),
-                                                                            date_video: (new Date()).toISOString(),
-                                                                            name_video: nameEndField,
-                                                                            contest_id: contestid,
-                                                                            file_name_conv: fileNameConv
-                                                                        }),
-                                                                        QueueUrl: 'https://sqs.us-east-2.amazonaws.com/962103057762/SQS-Response-D'
-                                                                    }, (err, data) => {
-                                                                        if (err) {
-                                                                            console.log("Error", err);
-                                                                        } else {
-                                                                            console.log("Successfully added message", data.MessageId);
-                                                                            console.log("------------------------------------------------------------------------------------------------( " + ((new Date()).toISOString()) +  " )");
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                        }
+                                            if(fileNameConv !== "load") {
+                                                setTimeout(function(){
+                                                    AWS.config.update({
+                                                        region: "us-east-2",
+                                                        endpoint: "http://dynamodb.us-east-2.amazonaws.com",
+                                                        accessKeyId: process.env.ACCESS_KEY_ID, 
+                                                        secretAccessKey: process.env.SECRET_ACCESS_KEY
                                                     });
-                                                }
-                                                modify();
-                                            }, 1000);
+                                                    var docClient = new AWS.DynamoDB.DocumentClient();
+                                                    let modify = function () {
+                                                        docClient.update({
+                                                            TableName: "videos",
+                                                            Key: { "email": emailVideo },
+                                                            UpdateExpression: "set status_video = :statusBy, converted_video = :convertedVideoBy",
+                                                            ExpressionAttributeValues: {
+                                                                ":statusBy" : "Convertido",
+                                                                ":convertedVideoBy" : nameEndField
+                                                            },
+                                                            ReturnValues: "UPDATED_NEW"
+                                                        }, function (err, data) {
+                                                            if (err) {
+                                                                console.log("191 -> users::update::error - " + JSON.stringify(err, null, 2));
+                                                            } else {
+                                                                console.log("193 -> users::update::success "+JSON.stringify(data) );
 
-                                            setTimeout(function(){
-                                                var mail = new helper.Mail(
-                                                    new helper.Email('yc.espejo10@uniandes.edu.co'), 
-                                                    'Video procesado', 
-                                                    new helper.Email(emailVideo), 
-                                                    new helper.Content('text/plain', "Hola " + nameMail + " " + lastNameMail + " Tu video se proceso sin problemas " + nameEndField)
-                                                );
+                                                                sqs.deleteMessage({
+                                                                    QueueUrl: 'https://sqs.us-east-2.amazonaws.com/962103057762/SQS-Deployment-D',
+                                                                    ReceiptHandle: objectDeleteQueue
+                                                                }, function(err, data) {
+                                                                    if (err) {
+                                                                        console.log("Delete Error", err);
+                                                                    } else {
+                                                                        console.log("Message Deleted", data);
 
-                                                var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+                                                                        const sqsS = new AWS.SQS({
+                                                                            accessKeyId: process.env.ACCESS_KEY_ID,
+                                                                            secretAccessKey: process.env.SECRET_ACCESS_KEY
+                                                                        });
+                                                                        sqsS.sendMessage({
+                                                                            MessageBody: JSON.stringify({
+                                                                                order_id: new Date().getTime(),
+                                                                                date_video: (new Date()).toISOString(),
+                                                                                name_video: nameEndField,
+                                                                                contest_id: contestid,
+                                                                                file_name_conv: fileNameConv
+                                                                            }),
+                                                                            QueueUrl: 'https://sqs.us-east-2.amazonaws.com/962103057762/SQS-Response-D'
+                                                                        }, (err, data) => {
+                                                                            if (err) {
+                                                                                console.log("Error", err);
+                                                                            } else {
+                                                                                console.log("Successfully added message", data.MessageId);
+                                                                                console.log("------------------------------------------------------------------------------------------------( " + ((new Date()).toISOString()) +  " )");
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                    modify();
+                                                }, 1000);
 
-                                                var request = sg.emptyRequest({
-                                                    method: 'POST',
-                                                    path: '/v3/mail/send',
-                                                    body: mail.toJSON(),
-                                                });
+                                                setTimeout(function(){
+                                                    var mail = new helper.Mail(
+                                                        new helper.Email('yc.espejo10@uniandes.edu.co'), 
+                                                        'Video procesado', 
+                                                        new helper.Email(emailVideo), 
+                                                        new helper.Content('text/plain', "Hola " + nameMail + " " + lastNameMail + " Tu video se proceso sin problemas " + nameEndField)
+                                                    );
 
-                                                sg.API(request, function(error, response) {
-                                                    console.log("----- email process begin -----");
-                                                    console.log(response);
-                                                    console.log(error);
-                                                    console.log("----- email process end -----");
-                                                });
-                                            }, 200);
+                                                    var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+
+                                                    var request = sg.emptyRequest({
+                                                        method: 'POST',
+                                                        path: '/v3/mail/send',
+                                                        body: mail.toJSON(),
+                                                    });
+
+                                                    sg.API(request, function(error, response) {
+                                                        console.log("----- email process begin -----");
+                                                        console.log(response);
+                                                        console.log(error);
+                                                        console.log("----- email process end -----");
+                                                    });
+                                                }, 200);
+                                            }
 
                                             pool.query('UPDATE videos set status = ?, converted_video = ? WHERE id = ?',[status,nameEndField,viid], function(errores,respuesta){
                                                 if(errores){
