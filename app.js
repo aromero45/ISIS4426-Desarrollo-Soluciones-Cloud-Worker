@@ -86,7 +86,7 @@ var task = cron.schedule("* * * * *", function() {
             console.log(data.Messages[0].Body);
     	    var objectQueue = JSON.parse(data.Messages[0].Body);
             var objectDeleteQueue = data.Messages[0].ReceiptHandle;
-    	    pool.query('SELECT name, last_name, original_video, contest_id, email, id from videos WHERE status <> "Convertido"', function(err,res){
+    	    pool.query('SELECT name, last_name, original_video, contest_id, email, id from videos WHERE status <> "Convertido" limit 1', function(err,res){
                 if(err){
              	    throw err;
                 } else {
