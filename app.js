@@ -262,7 +262,7 @@ var task = cron.schedule("* * * * *", function() {
                                                         if(error){
                                                             throw error
                                                         } else {
-                                                            console.log("Actualizado");
+                                                            console.log("Actualizado ");
                                                         }
                                                     });
                                                 }
