@@ -262,7 +262,7 @@ var task = cron.schedule("* * * * *", function() {
                                                         if(error){
                                                             throw error
                                                         } else {
-                                                            let urlvideo = result[0].url; 
+                                                            console.log("Actualizado");
                                                         }
                                                     });
                                                 }
