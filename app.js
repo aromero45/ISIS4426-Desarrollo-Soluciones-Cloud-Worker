@@ -166,7 +166,7 @@ var task = cron.schedule("* * * * *", function() {
 
                                             let fileNameConv=fileName.split('.')[0]+'.mp4';
                                             let status = "Convertido";
-Console.lof(fileNameConv + "=========================================================================");
+Console.log(fileNameConv + "=========================================================================");
                                             if(fileNameConv !== "load") {
                                                 setTimeout(function(){
                                                     AWS.config.update({
