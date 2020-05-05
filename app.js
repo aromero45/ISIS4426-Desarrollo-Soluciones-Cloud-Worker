@@ -230,7 +230,7 @@ var task = cron.schedule("*/5 * * * * *", function() {
                                                 }
                                                 modify();
                                             }, 1000);
-
+ 
                                             setTimeout(function(){
                                                 var mail = new helper.Mail(
                                                     new helper.Email('yc.espejo10@uniandes.edu.co'), 
